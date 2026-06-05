@@ -1,6 +1,5 @@
 discord.py
 requests
 flask
-python-dotenv\
+python-dotenv
 openai
-aiohttp
