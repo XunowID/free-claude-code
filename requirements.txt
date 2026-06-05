@@ -1,8 +1,0 @@
-discord.py
-requests
-flask
-python-dotenv
-openai
-aiohttp
-fastapi
-uvicorn
