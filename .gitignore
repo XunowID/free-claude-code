@@ -1,0 +1,29 @@
+# Claude Code
+.claude/
+.agents/
+.skills/
+skills-lock.json
+
+# Playwright MCP
+.playwright-mcp/
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.env
+
+# Node
+node_modules/
+
+# Embedded tools (cloned repos)
+httprobe/
+metasploit-framework/
+subfinder/
