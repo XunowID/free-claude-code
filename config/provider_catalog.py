@@ -16,11 +16,11 @@ NVIDIA_NIM_DEFAULT_BASE = "https://integrate.api.nvidia.com/v1"
 # Moonshot Kimi Anthropic-compatible Messages API (POST …/messages).
 KIMI_DEFAULT_BASE = "https://api.moonshot.ai/anthropic/v1"
 WAFER_DEFAULT_BASE = "https://pass.wafer.ai/v1"
-# DeepSeek Anthropic-compatible Messages API (not OpenAI ``/v1`` chat completions).
-DEEPSEEK_ANTHROPIC_DEFAULT_BASE = "https://api.deepseek.com/anthropic"
-# Historical export name: DeepSeek upstream is the native Anthropic path above.
-DEEPSEEK_DEFAULT_BASE = DEEPSEEK_ANTHROPIC_DEFAULT_BASE
+# DeepSeek Chat Completions API; cache usage is reported on this endpoint.
+DEEPSEEK_DEFAULT_BASE = "https://api.deepseek.com"
 FIREWORKS_DEFAULT_BASE = "https://api.fireworks.ai/inference/v1"
+# Cloudflare account-scoped AI REST root; provider appends /accounts/{id}/ai/v1.
+CLOUDFLARE_AI_REST_ROOT = "https://api.cloudflare.com/client/v4"
 OPENROUTER_DEFAULT_BASE = "https://openrouter.ai/api/v1"
 MISTRAL_DEFAULT_BASE = "https://api.mistral.ai/v1"
 # Codestral IDE/personal endpoint (distinct from La Plateforme ``api.mistral.ai`` keys).
@@ -92,12 +92,12 @@ PROVIDER_CATALOG: dict[str, ProviderDescriptor] = {
     "deepseek": ProviderDescriptor(
         provider_id="deepseek",
         display_name="DeepSeek",
-        transport_type="anthropic_messages",
+        transport_type="openai_chat",
         credential_env="DEEPSEEK_API_KEY",
         credential_url="https://platform.deepseek.com/api_keys",
         credential_attr="deepseek_api_key",
-        default_base_url=DEEPSEEK_ANTHROPIC_DEFAULT_BASE,
-        capabilities=("chat", "streaming", "tools", "thinking", "native_anthropic"),
+        default_base_url=DEEPSEEK_DEFAULT_BASE,
+        capabilities=("chat", "streaming", "tools", "thinking", "rate_limit"),
     ),
     "mistral": ProviderDescriptor(
         provider_id="mistral",
@@ -211,6 +211,24 @@ PROVIDER_CATALOG: dict[str, ProviderDescriptor] = {
             "rate_limit",
         ),
     ),
+    "cloudflare": ProviderDescriptor(
+        provider_id="cloudflare",
+        display_name="Cloudflare",
+        transport_type="anthropic_messages",
+        credential_env="CLOUDFLARE_API_TOKEN",
+        credential_url="https://dash.cloudflare.com/profile/api-tokens",
+        credential_attr="cloudflare_api_token",
+        default_base_url=CLOUDFLARE_AI_REST_ROOT,
+        proxy_attr="cloudflare_proxy",
+        capabilities=(
+            "chat",
+            "streaming",
+            "tools",
+            "thinking",
+            "native_anthropic",
+            "rate_limit",
+        ),
+    ),
     "zai": ProviderDescriptor(
         provider_id="zai",
         display_name="Z.ai",
@@ -268,7 +286,7 @@ PROVIDER_CATALOG: dict[str, ProviderDescriptor] = {
 
 # Key order:
 # NVIDIA NIM first (README default), DeepSeek fourth, Wafer ninth / Kimi tenth; then cerebras /
-# groq / fireworks overlap; remainder and locals last per project plan (
+# groq / fireworks / Cloudflare overlap; remainder and locals last per project plan (
 # github.com/cheahjs/free-llm-api-resources Free Providers TOC as rough guide beyond fixed slots).
 # ``SUPPORTED_PROVIDER_IDS`` inherits this insertion order for UI and error-message listing.
 SUPPORTED_PROVIDER_IDS: tuple[str, ...] = tuple(PROVIDER_CATALOG.keys())
